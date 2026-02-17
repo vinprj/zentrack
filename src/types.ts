@@ -2,7 +2,7 @@ export interface Habit {
   id: string;
   name: string;
   icon: string;
-  color: string;
+  color?: string;
   frequency: 'daily' | 'weekly';
   completions: Record<string, boolean>; // date string -> completed
   createdAt: number;
