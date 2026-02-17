@@ -21,7 +21,7 @@ interface Props {
   onUpdate: (id: string, updates: Partial<Habit>) => void;
 }
 
-export default function HabitList({ habits, groups, today, onToggle, onDelete }: Props) {
+export default function HabitList({ habits, groups, today, onToggle, onDelete, focusMode }: Props) {
   if (!habits.length) {
     return (
       <div className="text-center py-16 text-gray-400">
@@ -83,7 +83,8 @@ export default function HabitList({ habits, groups, today, onToggle, onDelete }:
   );
 }
 
-function HabitCard({ habit, today, onToggle, onDelete }: {
+function HabitCard({ habit, today, onToggle, onDelete, focusMode }: {
+  focusMode?: boolean;
   habit: Habit;
   today: string;
   onToggle: (id: string) => void;

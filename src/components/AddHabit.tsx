@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import type { Habit, HabitGroup } from '../types';
-import { Bell } from 'lucide-react';
+import { Bell, X } from 'lucide-react';
 
-const ICONS = ['💪', '📖', '🧘', '🏃', '💧', '🎯', '✍️', '🥗', '😴', '🧹', '💻', '🎵'];
+const ICONS = ['🌱', '📖', '🧘', '🏃', '💧', '🎯', '✍️', '🥗', '😴', '🧹', '💻', '🎵', '🧠', '📝', '🌟', '💰', '🌸', '🌿', '🪷', '🍵'];
 
 interface Props {
   onAdd: (habit: Omit<Habit, 'id' | 'completions' | 'createdAt'>) => void;
@@ -12,7 +12,7 @@ interface Props {
 
 export default function AddHabit({ onAdd, onCancel, groups }: Props) {
   const [name, setName] = useState('');
-  const [icon, setIcon] = useState('💪');
+  const [icon, setIcon] = useState('🌱');
   const [groupId, setGroupId] = useState<string | undefined>(undefined);
   const [reminderEnabled, setReminderEnabled] = useState(false);
   const [reminderTime, setReminderTime] = useState('09:00');
@@ -32,22 +32,41 @@ export default function AddHabit({ onAdd, onCancel, groups }: Props) {
   };
 
   return (
-    <div className="mt-4 p-4 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 space-y-4">
+    <div className="mt-6 p-5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-light)] shadow-lg animate-scale-in">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="font-display font-semibold text-lg text-[var(--text-primary)]">
+          New Habit
+        </h3>
+        <button 
+          onClick={onCancel}
+          className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] transition-all"
+        >
+          <X size={18} />
+        </button>
+      </div>
+      
       <input
         type="text"
         value={name}
         onChange={e => setName(e.target.value)}
-        placeholder="Habit name..."
-        className="w-full px-4 py-2 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 outline-none focus:ring-2 focus:ring-violet-500"
+        placeholder="What habit do you want to cultivate?"
+        className="w-full px-4 py-3 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-light)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:border-[var(--accent-sage)] transition-all"
         autoFocus
       />
       
-      <div>
-        <p className="text-sm text-gray-500 mb-2">Icon</p>
+      <div className="mt-4">
+        <p className="text-sm font-medium text-[var(--text-secondary)] mb-2">Choose an icon</p>
         <div className="flex flex-wrap gap-2">
           {ICONS.map(i => (
-            <button key={i} onClick={() => setIcon(i)}
-              className={`w-10 h-10 rounded-lg text-lg flex items-center justify-center ${icon === i ? 'bg-violet-100 dark:bg-violet-900/30 ring-2 ring-violet-500' : 'bg-gray-100 dark:bg-gray-800'}`}>
+            <button 
+              key={i} 
+              onClick={() => setIcon(i)}
+              className={`w-10 h-10 rounded-xl text-lg flex items-center justify-center transition-all ${
+                icon === i 
+                  ? 'bg-[var(--accent-sage)]/20 ring-2 ring-[var(--accent-sage)] scale-110' 
+                  : 'bg-[var(--bg-secondary)] hover:bg-[var(--bg-elevated)]'
+              }`}
+            >
               {i}
             </button>
           ))}
@@ -55,12 +74,12 @@ export default function AddHabit({ onAdd, onCancel, groups }: Props) {
       </div>
 
       {groups.length > 0 && (
-        <div>
-          <p className="text-sm text-gray-500 mb-2">Group (optional)</p>
+        <div className="mt-4">
+          <p className="text-sm font-medium text-[var(--text-secondary)] mb-2">Group (optional)</p>
           <select
             value={groupId || ''}
             onChange={(e) => setGroupId(e.target.value || undefined)}
-            className="w-full px-4 py-2 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 outline-none focus:ring-2 focus:ring-violet-500"
+            className="w-full px-4 py-3 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-light)] text-[var(--text-primary)] focus:border-[var(--accent-sage)] transition-all"
           >
             <option value="">No group</option>
             {groups.map(group => (
@@ -72,40 +91,43 @@ export default function AddHabit({ onAdd, onCancel, groups }: Props) {
         </div>
       )}
 
-      <div className="border-t border-gray-200 dark:border-gray-800 pt-3">
+      <div className="mt-4 p-4 rounded-xl bg-[var(--bg-secondary)] border border-[var(--border-light)]">
         <label className="flex items-center justify-between cursor-pointer">
           <div className="flex items-center gap-2">
-            <Bell className="w-4 h-4 text-gray-500" />
-            <span className="text-sm font-medium">Daily Reminder</span>
+            <Bell className="w-4 h-4 text-[var(--accent-sage)]" />
+            <span className="text-sm font-medium text-[var(--text-secondary)]">Daily Reminder</span>
           </div>
           <input
             type="checkbox"
             checked={reminderEnabled}
             onChange={(e) => setReminderEnabled(e.target.checked)}
-            className="w-5 h-5 rounded border-gray-300 text-violet-600 focus:ring-violet-500"
+            className="w-5 h-5 rounded border-[var(--border-light)] text-[var(--accent-sage)] focus:ring-[var(--accent-sage)]"
           />
         </label>
 
         {reminderEnabled && (
-          <div className="mt-2">
+          <div className="mt-3 animate-fade-in-up">
             <input
               type="time"
               value={reminderTime}
               onChange={(e) => setReminderTime(e.target.value)}
-              className="w-full px-4 py-2 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 outline-none focus:ring-2 focus:ring-violet-500"
+              className="w-full px-4 py-2.5 rounded-lg bg-[var(--bg-card)] border border-[var(--border-light)] text-[var(--text-primary)] focus:border-[var(--accent-sage)]"
             />
           </div>
         )}
       </div>
 
-      <div className="flex gap-2">
-        <button onClick={onCancel} className="flex-1 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-medium">
+      <div className="flex gap-3 mt-5">
+        <button 
+          onClick={onCancel} 
+          className="flex-1 py-3 rounded-xl bg-[var(--bg-secondary)] text-[var(--text-secondary)] font-medium hover:bg-[var(--bg-elevated)] transition-all"
+        >
           Cancel
         </button>
         <button 
           onClick={handleSubmit}
           disabled={!name.trim()}
-          className="flex-1 py-2 rounded-lg bg-violet-600 hover:bg-violet-700 disabled:bg-violet-400 text-white font-medium transition-colors"
+          className="flex-1 py-3 rounded-xl btn-primary text-white font-semibold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Add Habit
         </button>

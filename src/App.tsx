@@ -15,15 +15,16 @@ function loadData<T>(key: string, fallback: T): T {
   return saved ? JSON.parse(saved) : fallback;
 }
 
-// Initial achievements
+// Initial achievements - Zen Garden themed
 const initialAchievements: Achievement[] = [
-  { id: '1', title: 'First Step', description: 'Complete your first habit', icon: '🎯', target: 1, progress: 0, type: 'total' },
-  { id: '2', title: 'On Fire!', description: 'Achieve a 7-day streak', icon: '🔥', target: 7, progress: 0, type: 'streak' },
-  { id: '3', title: 'Consistency', description: 'Complete 30 habits total', icon: '💪', target: 30, progress: 0, type: 'total' },
-  { id: '4', title: 'Dedicated', description: 'Achieve a 30-day streak', icon: '⭐', target: 30, progress: 0, type: 'streak' },
-  { id: '5', title: 'Perfect Week', description: 'Complete all habits for 7 days', icon: '👑', target: 7, progress: 0, type: 'perfect_week' },
-  { id: '6', title: 'Variety', description: 'Track 10 different habits', icon: '🌈', target: 10, progress: 0, type: 'variety' },
-  { id: '7', title: 'Century', description: 'Complete 100 habits total', icon: '💯', target: 100, progress: 0, type: 'total' },
+  { id: '1', title: 'First Sprout', description: 'Complete your first habit', icon: '🌱', target: 1, progress: 0, type: 'total' },
+  { id: '2', title: 'Morning Dew', description: 'Achieve a 7-day streak', icon: '💧', target: 7, progress: 0, type: 'streak' },
+  { id: '3', title: 'Steady Growth', description: 'Complete 30 habits total', icon: '🌿', target: 30, progress: 0, type: 'total' },
+  { id: '4', title: 'Rooted Deep', description: 'Achieve a 30-day streak', icon: '🌳', target: 30, progress: 0, type: 'streak' },
+  { id: '5', title: 'Perfect Harmony', description: 'Complete all habits for 7 days', icon: '🪷', target: 7, progress: 0, type: 'perfect_week' },
+  { id: '6', title: 'Biodiversity', description: 'Track 10 different habits', icon: '🌸', target: 10, progress: 0, type: 'variety' },
+  { id: '7', title: 'Centennial Tree', description: 'Complete 100 habits total', icon: '🎋', target: 100, progress: 0, type: 'total' },
+  { id: '8', title: 'Full Bloom', description: 'Complete all habits in a day', icon: '🌺', target: 1, progress: 0, type: 'perfect_day' },
 ];
 
 export default function App() {
@@ -63,6 +64,26 @@ export default function App() {
     updateAchievements();
   }, [habits]);
 
+  // Show achievement notification when newly unlocked
+  useEffect(() => {
+    const prevAchievements = loadData('zentrack-achievements', initialAchievements);
+    achievements.forEach(achievement => {
+      const prev = prevAchievements.find(a => a.id === achievement.id);
+      if (achievement.unlockedAt && !prev?.unlockedAt) {
+        showAchievementNotification(achievement);
+      }
+    });
+  }, [achievements]);
+
+  const showAchievementNotification = (achievement: Achievement) => {
+    if (Notification.permission === 'granted') {
+      new Notification('🏆 Achievement Unlocked!', {
+        body: `${achievement.icon} ${achievement.title}: ${achievement.description}`,
+        icon: '/icon.png',
+      });
+    }
+  };
+
   const today = new Date().toISOString().split('T')[0];
 
   const updateAchievements = () => {
@@ -86,6 +107,9 @@ export default function App() {
           break;
         case 'perfect_week':
           progress = calculatePerfectWeekDays();
+          break;
+        case 'perfect_day':
+          progress = calculatePerfectDay();
           break;
       }
 
@@ -139,6 +163,11 @@ export default function App() {
     }
     
     return perfectDays;
+  };
+
+  const calculatePerfectDay = (): number => {
+    const allCompletedToday = habits.length > 0 && habits.every(h => h.completions[today] === true);
+    return allCompletedToday ? 1 : 0;
   };
 
   const toggleHabit = (id: string) => {
@@ -198,10 +227,34 @@ export default function App() {
     return acc;
   }, {} as Record<string, number>);
 
+  // Calculate today's progress
+  const completedToday = habits.filter(h => h.completions[today]).length;
+  const totalHabits = habits.length;
+  const progressPercent = totalHabits > 0 ? Math.round((completedToday / totalHabits) * 100) : 0;
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors">
+    <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] transition-colors">
       <Header theme={theme} setTheme={setTheme} view={view} setView={setView} />
+      
       <main className="max-w-lg mx-auto px-4 pb-24">
+        {/* Progress indicator */}
+        {view === 'habits' && totalHabits > 0 && (
+          <div className="mt-4 mb-6 p-4 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-light)] shadow-sm">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-[var(--text-secondary)]">Today's Progress</span>
+              <span className="text-sm font-semibold bg-gradient-to-r from-[var(--accent-sage)] to-[var(--accent-sky)] bg-clip-text text-transparent">
+                {completedToday}/{totalHabits} ({progressPercent}%)
+              </span>
+            </div>
+            <div className="progress-bar">
+              <div 
+                className="progress-bar-fill h-2"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+          </div>
+        )}
+        
         {view === 'habits' && (
           <>
             <HabitList 
@@ -215,7 +268,10 @@ export default function App() {
             {showAdd ? (
               <AddHabit onAdd={addHabit} onCancel={() => setShowAdd(false)} groups={groups} />
             ) : (
-              <button onClick={() => setShowAdd(true)} className="w-full mt-4 py-3 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-semibold transition-colors">
+              <button 
+                onClick={() => setShowAdd(true)} 
+                className="w-full mt-6 py-4 rounded-2xl btn-primary text-white font-semibold shadow-lg"
+              >
                 + New Habit
               </button>
             )}
