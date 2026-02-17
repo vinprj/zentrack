@@ -40,6 +40,8 @@ export interface Achievement {
   type: 'streak' | 'total' | 'perfect_week' | 'variety';
 }
 
+export type AchievementType = 'streak' | 'total' | 'perfect_week' | 'variety' | 'perfect_day';
+
 export type Theme = 'light' | 'dark';
 
 export interface ExportData {

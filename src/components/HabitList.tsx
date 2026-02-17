@@ -21,12 +21,15 @@ interface Props {
   onUpdate: (id: string, updates: Partial<Habit>) => void;
 }
 
-export default function HabitList({ habits, groups, today, onToggle, onDelete, focusMode }: Props) {
+export default function HabitList({ habits, groups, today, onToggle, onDelete }: Props) {
   if (!habits.length) {
     return (
-      <div className="text-center py-16 text-gray-400">
-        <p className="text-lg">No habits yet</p>
-        <p className="text-sm mt-1">Start building your streaks!</p>
+      <div className="text-center py-16 animate-fade-in-up">
+        <div className="w-20 h-20 mx-auto mb-4 rounded-3xl bg-gradient-to-br from-[var(--accent-sage)]/20 to-[var(--accent-sky)]/20 flex items-center justify-center text-4xl">
+          🌱
+        </div>
+        <p className="text-lg font-medium text-[var(--text-primary)]">No habits yet</p>
+        <p className="text-sm text-[var(--text-muted)] mt-1">Start cultivating your growth!</p>
       </div>
     );
   }
@@ -40,24 +43,42 @@ export default function HabitList({ habits, groups, today, onToggle, onDelete, f
   const ungroupedHabits = habits.filter(h => !h.groupId);
 
   return (
-    <div className="space-y-6 mt-4">
+    <div className="space-y-6 mt-4 stagger-children">
       {/* Grouped habits */}
       {groupedHabits.map(({ group, habits: groupHabits }) => {
         if (groupHabits.length === 0) return null;
         
         return (
-          <div key={group.id}>
-            <div className="flex items-center gap-2 mb-2">
-              <div className={`w-8 h-8 rounded-lg ${group.color} flex items-center justify-center text-sm`}>
+          <div key={group.id} className="animate-fade-in-up">
+            <div className="flex items-center gap-2 mb-3">
+              <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-sm shadow-sm ${
+                group.color === 'red' ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' :
+                group.color === 'orange' ? 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400' :
+                group.color === 'yellow' ? 'bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400' :
+                group.color === 'green' ? 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400' :
+                group.color === 'blue' ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' :
+                group.color === 'purple' ? 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400' :
+                'bg-[var(--accent-sage)]/20 text-[var(--accent-sage)]'
+              }`}>
                 {group.icon}
               </div>
-              <h3 className="font-semibold text-sm text-gray-700 dark:text-gray-300">
+              <h3 className="font-display font-semibold text-sm text-[var(--text-secondary)]">
                 {group.name}
               </h3>
+              <span className="text-xs text-[var(--text-muted)] ml-auto">
+                {groupHabits.length}
+              </span>
             </div>
             <div className="space-y-2">
-              {groupHabits.map(h => (
-                <HabitCard key={h.id} habit={h} today={today} onToggle={onToggle} onDelete={onDelete} />
+              {groupHabits.map((h, i) => (
+                <HabitCard 
+                  key={h.id} 
+                  habit={h} 
+                  today={today} 
+                  onToggle={onToggle} 
+                  onDelete={onDelete}
+                  index={i}
+                />
               ))}
             </div>
           </div>
@@ -66,15 +87,22 @@ export default function HabitList({ habits, groups, today, onToggle, onDelete, f
 
       {/* Ungrouped habits */}
       {ungroupedHabits.length > 0 && (
-        <div>
+        <div className="animate-fade-in-up">
           {groupedHabits.some(g => g.habits.length > 0) && (
-            <h3 className="font-semibold text-sm text-gray-700 dark:text-gray-300 mb-2">
+            <h3 className="font-display font-semibold text-sm text-[var(--text-secondary)] mb-3">
               Other Habits
             </h3>
           )}
           <div className="space-y-2">
-            {ungroupedHabits.map(h => (
-              <HabitCard key={h.id} habit={h} today={today} onToggle={onToggle} onDelete={onDelete} />
+            {ungroupedHabits.map((h, i) => (
+              <HabitCard 
+                key={h.id} 
+                habit={h} 
+                today={today} 
+                onToggle={onToggle} 
+                onDelete={onDelete}
+                index={i}
+              />
             ))}
           </div>
         </div>
@@ -83,62 +111,63 @@ export default function HabitList({ habits, groups, today, onToggle, onDelete, f
   );
 }
 
-function HabitCard({ habit, today, onToggle, onDelete, focusMode }: {
-  focusMode?: boolean;
+function HabitCard({ habit, today, onToggle, onDelete, index }: {
   habit: Habit;
   today: string;
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
+  index: number;
 }) {
   const done = !!habit.completions[today];
   const streak = getStreak(habit);
 
   return (
     <div 
-      className={`flex items-center gap-3 p-4 rounded-2xl border-2 smooth-transition cursor-pointer group calm-fade-in ${
+      className={`habit-card flex items-center gap-3 p-4 rounded-2xl border-2 cursor-pointer group ${
         done 
-          ? 'zen-card border-green-300/50 dark:border-green-700/50 shadow-lg shadow-green-200/20 dark:shadow-green-900/20' 
-          : 'zen-card border-purple-200/30 dark:border-purple-700/30 hover:border-purple-400/50 dark:hover:border-purple-500/50 zen-glow'
+          ? 'completed border-[var(--success)]' 
+          : 'border-[var(--border-light)] hover:border-[var(--accent-sage)]'
       }`}
+      style={{ animationDelay: `${index * 50}ms` }}
       onClick={() => onToggle(habit.id)}
     >
-      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl smooth-transition ${
+      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xl transition-all ${
         done 
-          ? 'bg-gradient-to-br from-green-400 to-emerald-500 text-white shadow-lg breathe' 
-          : 'bg-gradient-to-br from-purple-100 to-blue-100 dark:from-purple-900/30 dark:to-blue-900/30'
+          ? 'bg-gradient-to-br from-[var(--success)] to-[var(--accent-moss)] text-white shadow-lg shadow-[var(--success)]/25' 
+          : 'bg-[var(--bg-secondary)]'
       }`}>
         {habit.icon}
       </div>
       
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <p className={`font-semibold font-quicksand text-lg ${done ? 'line-through text-gray-400 dark:text-gray-500' : 'text-gray-800 dark:text-gray-100'}`}>
+          <p className={`font-medium truncate ${done ? 'text-[var(--text-muted)] line-through' : 'text-[var(--text-primary)]'}`}>
             {habit.name}
           </p>
           {habit.reminder?.enabled && (
-            <Bell className="w-4 h-4 text-purple-400 pulse-zen" />
+            <Bell className="w-3.5 h-3.5 text-[var(--accent-sage)] flex-shrink-0" />
           )}
         </div>
         {streak > 0 && (
-          <p className="text-sm font-semibold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent flex items-center gap-1.5 mt-1">
-            <Flame size={16} className="text-orange-500" /> {streak} day streak 🔥
+          <p className="text-sm font-semibold streak-badge flex items-center gap-1 mt-0.5">
+            <Flame size={14} className="text-[var(--accent-terracotta)]" /> {streak} day{streak !== 1 ? 's' : ''}
           </p>
         )}
       </div>
       
-      <div className={`w-8 h-8 rounded-full border-3 flex items-center justify-center font-bold smooth-transition ${
+      <div className={`w-7 h-7 rounded-full border-2 flex items-center justify-center font-bold transition-all ${
         done 
-          ? 'bg-gradient-to-br from-green-400 to-emerald-500 border-green-500 text-white scale-110 shadow-lg' 
-          : 'border-purple-300 dark:border-purple-600 text-transparent group-hover:border-purple-500'
+          ? 'bg-gradient-to-br from-[var(--success)] to-[var(--accent-moss)] border-[var(--success)] text-white animate-check-bounce' 
+          : 'border-[var(--text-muted)] text-transparent group-hover:border-[var(--accent-sage)]'
       }`}>
         {done && '✓'}
       </div>
       
       <button 
         onClick={(e) => { e.stopPropagation(); onDelete(habit.id); }} 
-        className="p-2 text-gray-400 hover:text-red-500 dark:hover:text-red-400 opacity-0 group-hover:opacity-100 smooth-transition rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20"
+        className="p-2 text-[var(--text-muted)] hover:text-[var(--danger)] dark:hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20"
       >
-        <Trash2 size={18} />
+        <Trash2 size={16} />
       </button>
     </div>
   );
