@@ -37,7 +37,7 @@ export interface Achievement {
   unlockedAt?: number; // Timestamp when unlocked
   progress: number; // 0-100
   target: number;
-  type: 'streak' | 'total' | 'perfect_week' | 'variety';
+  type: AchievementType;
 }
 
 export type AchievementType = 'streak' | 'total' | 'perfect_week' | 'variety' | 'perfect_day';
