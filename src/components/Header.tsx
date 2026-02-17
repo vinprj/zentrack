@@ -19,28 +19,31 @@ export default function Header({ theme, setTheme, view, setView }: Props) {
   ] as const;
 
   return (
-    <header className="sticky top-0 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-b border-gray-200 dark:border-gray-800">
-      <div className="max-w-lg mx-auto px-4 py-3">
-        <div className="flex items-center justify-between mb-2">
-          <h1 className="text-xl font-bold bg-gradient-to-r from-violet-600 to-pink-500 bg-clip-text text-transparent">
-            ZenTrack
+    <header className="sticky top-0 z-10 zen-card backdrop-blur-lg border-b-2 border-gradient-to-r from-purple-300/30 to-blue-300/30 dark:from-purple-700/30 dark:to-blue-700/30">
+      <div className="max-w-lg mx-auto px-4 py-4">
+        <div className="flex items-center justify-between mb-3">
+          <h1 className="text-3xl font-bold font-quicksand zen-gradient tracking-wide">
+            🧘 ZenTrack
           </h1>
-          <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800">
-            {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+          <button 
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} 
+            className="p-2.5 rounded-full text-gray-500 dark:text-gray-400 hover:bg-purple-100 dark:hover:bg-purple-900/30 smooth-transition zen-glow"
+          >
+            {theme === 'dark' ? <Sun size={22} className="text-yellow-400" /> : <Moon size={22} className="text-indigo-600" />}
           </button>
         </div>
-        <div className="flex items-center gap-1 overflow-x-auto pb-1">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
           {views.map(([v, Icon]) => (
             <button
               key={v}
               onClick={() => setView(v)}
-              className={`px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap flex items-center gap-1.5 text-sm ${
+              className={`px-4 py-2 rounded-2xl smooth-transition whitespace-nowrap flex items-center gap-2 text-sm font-semibold ${
                 view === v 
-                  ? 'bg-violet-100 dark:bg-violet-900/30 text-violet-600 font-medium' 
-                  : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg zen-glow' 
+                  : 'bg-white/40 dark:bg-gray-800/40 text-gray-600 dark:text-gray-300 hover:bg-purple-100 dark:hover:bg-purple-900/30'
               }`}
             >
-              <Icon size={16} />
+              <Icon size={18} />
               <span className="capitalize">{v}</span>
             </button>
           ))}

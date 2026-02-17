@@ -1,1 +1,186 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Nunito:wght@200;300;400;600;700;800&display=swap');
 @import "tailwindcss";
+
+:root {
+  --zen-lavender: #b8a6d9;
+  --zen-mint: #a8e6cf;
+  --zen-peach: #ffd3b6;
+  --zen-sky: #aad4e7;
+  --zen-rose: #ffaaa5;
+  --zen-sage: #c4d6b0;
+}
+
+* {
+  font-family: 'Nunito', sans-serif;
+}
+
+.font-quicksand {
+  font-family: 'Quicksand', sans-serif;
+}
+
+/* Zen-inspired background */
+.dark body {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+}
+
+body {
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8f4f8 50%, #fef9f3 100%);
+}
+
+/* Soft glow effect */
+.zen-glow {
+  box-shadow: 0 8px 32px rgba(184, 166, 217, 0.2);
+  transition: all 0.3s ease;
+}
+
+.zen-glow:hover {
+  box-shadow: 0 12px 48px rgba(184, 166, 217, 0.35);
+  transform: translateY(-2px);
+}
+
+/* Soft gradient cards */
+.zen-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(184, 166, 217, 0.2);
+}
+
+.dark .zen-card {
+  background: linear-gradient(135deg, rgba(30, 30, 46, 0.8) 0%, rgba(22, 33, 62, 0.6) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(184, 166, 217, 0.1);
+}
+
+/* Breathing animation */
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+.breathe {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+/* Float animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Ripple effect */
+@keyframes ripple {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+.ripple::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: currentColor;
+  opacity: 0.2;
+  animation: ripple 1.5s ease-out infinite;
+}
+
+/* Zen gradient text */
+.zen-gradient {
+  background: linear-gradient(135deg, var(--zen-lavender), var(--zen-sky), var(--zen-mint));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Soft pulse */
+@keyframes soft-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(168, 230, 207, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(168, 230, 207, 0);
+  }
+}
+
+.pulse-zen {
+  animation: soft-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Smooth transitions */
+.smooth-transition {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Organic shapes */
+.organic-shape {
+  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+  transition: border-radius 1s ease-in-out;
+}
+
+.organic-shape:hover {
+  border-radius: 70% 30% 30% 70% / 70% 70% 30% 30%;
+}
+
+/* Progress bar animation */
+@keyframes progress-shine {
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.progress-shine {
+  background: linear-gradient(
+    90deg,
+    var(--zen-lavender) 0%,
+    var(--zen-mint) 50%,
+    var(--zen-lavender) 100%
+  );
+  background-size: 200% 100%;
+  animation: progress-shine 2s linear infinite;
+}
+
+/* Calm fade in */
+@keyframes calm-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.calm-fade-in {
+  animation: calm-fade-in 0.8s ease-out;
+}
+
+/* Meditation circle */
+.meditation-circle {
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--zen-mint) 0%, transparent 70%);
+  filter: blur(40px);
+  opacity: 0.3;
+}
